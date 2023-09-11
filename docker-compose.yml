@@ -1,0 +1,14 @@
+version: '3.3'
+services:
+  postgredb:
+    container_name: postgredb
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 1234
+    volumes:
+      - /Users/enginoz/postgre_db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    expose:
+      - 5432

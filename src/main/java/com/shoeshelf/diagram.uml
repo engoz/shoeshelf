@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="919.0" y="310.0">com.shoeshelf.service.ProductService</node>
+    <node x="459.5" y="1090.5">com.shoeshelf.service.OrderService</node>
+    <node x="485.5" y="1021.0">com.shoeshelf.repository.OrderItemRepository</node>
+    <node x="948.0" y="666.0">com.shoeshelf.repository.CustomerRepository</node>
+    <node x="419.0" y="-13.5">com.shoeshelf.domain.Product</node>
+    <node x="423.0" y="408.5">com.shoeshelf.domain.Category</node>
+    <node x="-53.0" y="948.5">com.shoeshelf.domain.Customer</node>
+    <node x="485.5" y="928.0">com.shoeshelf.repository.OrderRepository</node>
+    <node x="917.0" y="530.0">com.shoeshelf.service.CustomerService</node>
+    <node x="762.5" y="1370.5">com.shoeshelf.service.CategoryService</node>
+    <node x="-47.0" y="166.5">com.shoeshelf.domain.OrderItem</node>
+    <node x="777.0" y="1250.0">com.shoeshelf.repository.CategoryRepository</node>
+    <node x="-63.0" y="588.5">com.shoeshelf.domain.Order</node>
+    <node x="949.5" y="466.0">com.shoeshelf.repository.ProductRepository</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.shoeshelf.service.OrderService" target="com.shoeshelf.repository.OrderRepository" relationship="TO_ONE">
+      <point x="121.0" y="-60.0" />
+      <point x="-9.5" y="26.5" />
+    </edge>
+    <edge source="com.shoeshelf.service.ProductService" target="com.shoeshelf.repository.ProductRepository" relationship="TO_ONE">
+      <point x="0.0" y="38.0" />
+      <point x="0.0" y="-14.0" />
+    </edge>
+    <edge source="com.shoeshelf.domain.Category" target="com.shoeshelf.domain.Product" relationship="TO_MANY">
+      <point x="0.0" y="-159.5" />
+      <point x="0.0" y="181.5" />
+    </edge>
+    <edge source="com.shoeshelf.service.OrderService" target="com.shoeshelf.repository.OrderItemRepository" relationship="TO_ONE">
+      <point x="0.0" y="-60.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.shoeshelf.service.CategoryService" target="com.shoeshelf.repository.CategoryRepository" relationship="TO_ONE">
+      <point x="0.0" y="-82.0" />
+      <point x="0.0" y="26.5" />
+    </edge>
+    <edge source="com.shoeshelf.domain.OrderItem" target="com.shoeshelf.domain.Order" relationship="TO_ONE">
+      <point x="-201.0" y="0.0" />
+      <point x="-65.0" y="348.0" />
+      <point x="-65.0" y="748.0" />
+      <point x="-217.0" y="0.0" />
+    </edge>
+    <edge source="com.shoeshelf.domain.OrderItem" target="com.shoeshelf.domain.Product" relationship="TO_ONE">
+      <point x="201.0" y="-95.0" />
+      <point x="-215.0" y="85.0" />
+    </edge>
+    <edge source="com.shoeshelf.domain.Order" target="com.shoeshelf.domain.OrderItem" relationship="TO_MANY">
+      <point x="0.0" y="-159.5" />
+      <point x="0.0" y="181.5" />
+    </edge>
+    <edge source="com.shoeshelf.service.CustomerService" target="com.shoeshelf.repository.CustomerRepository" relationship="TO_ONE">
+      <point x="0.0" y="38.0" />
+      <point x="0.0" y="-37.5" />
+    </edge>
+    <edge source="com.shoeshelf.service.OrderService" target="com.shoeshelf.domain.Order" relationship="CREATE">
+      <point x="-120.0" y="-60.0" />
+      <point x="468.0" y="763.0" />
+      <point x="217.0" y="15.0" />
+    </edge>
+    <edge source="com.shoeshelf.domain.Order" target="com.shoeshelf.domain.Customer" relationship="TO_ONE">
+      <point x="0.0" y="159.5" />
+      <point x="0.0" y="-159.5" />
+    </edge>
+    <edge source="com.shoeshelf.domain.Product" target="com.shoeshelf.domain.Category" relationship="TO_ONE">
+      <point x="-215.0" y="95.0" />
+      <point x="417.0" y="263.0" />
+      <point x="417.0" y="568.0" />
+      <point x="-211.0" y="0.0" />
+    </edge>
+    <edge source="com.shoeshelf.domain.Customer" target="com.shoeshelf.domain.Order" relationship="TO_MANY">
+      <point x="207.0" y="0.0" />
+      <point x="373.0" y="1108.0" />
+      <point x="373.0" y="748.0" />
+      <point x="217.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Compact" zoom="0.635596625150663" showDependencies="true" x="604.8347029077117" y="881.2632743362832" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
