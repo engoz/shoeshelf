@@ -3,10 +3,12 @@ package com.shoeshelf.service;
 import com.shoeshelf.domain.Category;
 import com.shoeshelf.dto.CategoryDto;
 import com.shoeshelf.exceptions.CategoryNotFoundExceptions;
+import com.shoeshelf.exceptions.InternelServerException;
 import com.shoeshelf.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,4 +53,45 @@ public class CategoryService {
         return categoryDto;
     }
 
+    public CategoryDto createCategory(CategoryDto dto) throws Exception {
+        if (dto == null)
+            throw new NullPointerException();
+
+        Category category = new Category();
+        category.setCategoryName(dto.getCategoryName());
+        category.setDescription(dto.getDescription());
+        category.setImageUrl(dto.getImageUrl());
+
+        categoryRepository.save(category);
+
+        dto.setId(category.getId());
+
+        return dto;
+    }
+
+    public void deleteCategory(Integer id) {
+
+        try {
+            categoryRepository.deleteById(id);
+        }catch(CategoryNotFoundExceptions ex){
+            throw ex;
+        }catch (Exception ex){
+            throw new InternelServerException(ex);
+
+        }
+
+    }
+
+    public CategoryDto update(CategoryDto dto) {
+        Optional<Category> categoryOptional = categoryRepository.findById(dto.getId());
+        if (categoryOptional.isEmpty()){
+            throw new CategoryNotFoundExceptions("Category not found with id :" + dto.getId());
+        }
+        Category category = categoryOptional.get();
+        category.setCategoryName(dto.getCategoryName());
+        category.setDescription(dto.getDescription());
+        category.setImageUrl(dto.getImageUrl());
+        categoryRepository.save(category);
+        return dto;
+    }
 }

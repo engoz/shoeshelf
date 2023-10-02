@@ -5,12 +5,8 @@ import com.shoeshelf.exceptions.CategoryNotFoundExceptions;
 import com.shoeshelf.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,6 +16,8 @@ import java.util.List;
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
+
+
 
     @GetMapping("/all")
     public ResponseEntity<List<CategoryDto>> getAll(){
@@ -41,6 +39,41 @@ public class CategoryController {
         }catch (CategoryNotFoundExceptions e){
             return ResponseEntity.notFound().build();
         }catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<CategoryDto> create(@RequestBody CategoryDto dto){
+        try {
+            CategoryDto categoryDto = categoryService.createCategory(dto);
+            return ResponseEntity.ok(categoryDto);
+        }catch (Exception ex){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+
+    @PutMapping("/update")
+    public ResponseEntity<CategoryDto> update(@RequestBody CategoryDto dto){
+        try {
+            CategoryDto categoryDto = categoryService.update(dto);
+            return ResponseEntity.ok(categoryDto);
+        }catch (Exception ex){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable Integer id){
+        try {
+            categoryService.deleteCategory(id);
+            return ResponseEntity.ok().build();
+        }catch (CategoryNotFoundExceptions ex){
+            return ResponseEntity.internalServerError().build();
+        }catch (Exception ex){
             return ResponseEntity.internalServerError().build();
         }
     }
