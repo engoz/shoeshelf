@@ -8,7 +8,6 @@ import com.shoeshelf.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +27,14 @@ public class CategoryService {
             throw new CategoryNotFoundExceptions("Category is empty");
         }
         for (Category category:allCategory) {
-            CategoryDto categoryDto = new CategoryDto();
-            categoryDto.setId(category.getId());
-            categoryDto.setCategoryName(category.getCategoryName());
-            categoryDto.setDescription(category.getDescription());
-            categoryDto.setImageUrl(category.getImageUrl());
+            CategoryDto categoryDto = convertDTO(category);
             categoryDtoList.add(categoryDto);
         }
 
         return categoryDtoList;
     }
+
+
 
     public CategoryDto getById(Integer id) throws CategoryNotFoundExceptions {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
@@ -45,15 +42,11 @@ public class CategoryService {
             throw new CategoryNotFoundExceptions("Category not found with id :" + id);
         }
         Category category = categoryOptional.get();
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setId(category.getId());
-        categoryDto.setCategoryName(category.getCategoryName());
-        categoryDto.setDescription(category.getDescription());
-        categoryDto.setImageUrl(category.getImageUrl());
+        CategoryDto categoryDto = convertDTO(category);
         return categoryDto;
     }
 
-    public CategoryDto createCategory(CategoryDto dto) throws Exception {
+    public CategoryDto createCategory(CategoryDto dto)  {
         if (dto == null)
             throw new NullPointerException();
 
@@ -93,5 +86,13 @@ public class CategoryService {
         category.setImageUrl(dto.getImageUrl());
         categoryRepository.save(category);
         return dto;
+    }
+    private CategoryDto convertDTO(Category category) {
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setId(category.getId());
+        categoryDto.setCategoryName(category.getCategoryName());
+        categoryDto.setDescription(category.getDescription());
+        categoryDto.setImageUrl(category.getImageUrl());
+        return categoryDto;
     }
 }
