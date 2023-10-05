@@ -1,7 +1,6 @@
 package com.shoeshelf.dto;
 
 
-import com.shoeshelf.domain.Order;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,5 +23,5 @@ public class CustomerDto {
 
     private String email;
 
-    private List<Order> orders;
+    private List<OrderDto> orderDtos;
 }

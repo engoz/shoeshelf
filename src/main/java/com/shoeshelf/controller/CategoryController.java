@@ -4,7 +4,6 @@ import com.shoeshelf.dto.CategoryDto;
 import com.shoeshelf.exceptions.CategoryNotFoundExceptions;
 import com.shoeshelf.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +13,8 @@ import java.util.List;
 @RequestMapping("/category")
 @RequiredArgsConstructor
 public class CategoryController {
-    @Autowired
-    private CategoryService categoryService;
+
+    private final CategoryService categoryService;
 
 
 
@@ -71,8 +70,6 @@ public class CategoryController {
         try {
             categoryService.deleteCategory(id);
             return ResponseEntity.ok().build();
-        }catch (CategoryNotFoundExceptions ex){
-            return ResponseEntity.internalServerError().build();
         }catch (Exception ex){
             return ResponseEntity.internalServerError().build();
         }

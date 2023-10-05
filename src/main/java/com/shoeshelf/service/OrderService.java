@@ -1,13 +1,12 @@
 package com.shoeshelf.service;
 
 import com.shoeshelf.domain.Order;
-import com.shoeshelf.domain.OrderItem;
 import com.shoeshelf.dto.OrderDto;
-import com.shoeshelf.dto.OrderItemDto;
 import com.shoeshelf.exceptions.InternelServerException;
 import com.shoeshelf.exceptions.OrderNotFoundException;
 import com.shoeshelf.repository.OrderItemRepository;
 import com.shoeshelf.repository.OrderRepository;
+import com.shoeshelf.util.OrderDtoConverters;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +41,7 @@ public class OrderService {
     public OrderDto getById(Integer id) throws OrderNotFoundException {
         Optional<Order> orderOptional = orderRepository.findById(id);
         if (orderOptional.isEmpty()){
-            throw new OrderNotFoundException("Ordernot found with id :" + id);
+            throw new OrderNotFoundException("Order not found with id :" + id);
         }
         OrderDto orderDto =  convertDto(orderOptional.get());
         return orderDto;
@@ -53,7 +52,7 @@ public class OrderService {
         orderDto.setId(order.getId());
         orderDto.setCreatedDate(order.getCreatedDate());
         orderDto.setCustomer(order.getCustomer());
-        orderDto.setOrderItems(convertOrderItemsDto(order.getOrderItems()));
+        orderDto.setOrderItems(OrderDtoConverters.convertOrderItemsDto(order.getOrderItems()));
         orderDto.setTotalPrice(order.getTotalPrice());
         return orderDto;
     }
@@ -68,7 +67,7 @@ public class OrderService {
         Order order = orderOptional.get();
         order.setCreatedDate(new Date());
         order.setCustomer(dto.getCustomer());
-        order.setOrderItems(convertOrderItems(dto.getOrderItems()));
+        order.setOrderItems(OrderDtoConverters.convertOrderItems(dto.getOrderItems()));
         order.setTotalPrice(dto.getTotalPrice());
         orderRepository.save(order);
         return dto;
@@ -91,7 +90,7 @@ public class OrderService {
         Order order = new Order();
         order.setCreatedDate(new Date());
         order.setCustomer(dto.getCustomer());
-        order.setOrderItems(convertOrderItems(dto.getOrderItems()));
+        order.setOrderItems(OrderDtoConverters.convertOrderItems(dto.getOrderItems()));
         order.setTotalPrice(dto.getTotalPrice());
         orderRepository.save(order);
         dto.setId(order.getId());
@@ -99,10 +98,5 @@ public class OrderService {
     }
 
 
-    private List<OrderItem>  convertOrderItems(List<OrderItemDto> orderItems){
-        return new ArrayList<>();
-    }
-     private List<OrderItemDto>  convertOrderItemsDto(List<OrderItem> orderItems){
-        return new ArrayList<>();
-     }
+
 }

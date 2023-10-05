@@ -1,7 +1,6 @@
 package com.shoeshelf.dto;
 
 
-import com.shoeshelf.domain.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,5 +19,5 @@ public class ProductDto {
     private double price;
     private String description;
 
-    Category category;
+    CategoryDto categoryDto;
 }

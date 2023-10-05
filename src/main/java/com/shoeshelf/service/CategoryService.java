@@ -5,6 +5,7 @@ import com.shoeshelf.dto.CategoryDto;
 import com.shoeshelf.exceptions.CategoryNotFoundExceptions;
 import com.shoeshelf.exceptions.InternelServerException;
 import com.shoeshelf.repository.CategoryRepository;
+import com.shoeshelf.util.CategoryDtoConverters;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class CategoryService {
             throw new CategoryNotFoundExceptions("Category is empty");
         }
         for (Category category:allCategory) {
-            CategoryDto categoryDto = convertDTO(category);
+            CategoryDto categoryDto = CategoryDtoConverters.convertDtoToCategory(category);
             categoryDtoList.add(categoryDto);
         }
 
@@ -42,7 +43,7 @@ public class CategoryService {
             throw new CategoryNotFoundExceptions("Category not found with id :" + id);
         }
         Category category = categoryOptional.get();
-        CategoryDto categoryDto = convertDTO(category);
+        CategoryDto categoryDto = CategoryDtoConverters.convertDtoToCategory(category);
         return categoryDto;
     }
 
@@ -87,12 +88,5 @@ public class CategoryService {
         categoryRepository.save(category);
         return dto;
     }
-    private CategoryDto convertDTO(Category category) {
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setId(category.getId());
-        categoryDto.setCategoryName(category.getCategoryName());
-        categoryDto.setDescription(category.getDescription());
-        categoryDto.setImageUrl(category.getImageUrl());
-        return categoryDto;
-    }
+
 }

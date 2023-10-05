@@ -6,12 +6,15 @@ import com.shoeshelf.exceptions.CategoryNotFoundExceptions;
 import com.shoeshelf.exceptions.CustomerNotFoundExceptions;
 import com.shoeshelf.exceptions.InternelServerException;
 import com.shoeshelf.repository.CustomerRepository;
+import com.shoeshelf.util.CustomerDtoConverters;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.shoeshelf.util.CustomerDtoConverters.convertDtoToCustomer;
 
 @Service
 @Transactional
@@ -29,7 +32,7 @@ public class CustomerService {
             throw new CustomerNotFoundExceptions("Customers is empty");
         }
         for (Customer customer:allCustomer) {
-            CustomerDto customerDto =  convertDto(customer);
+            CustomerDto customerDto =  CustomerDtoConverters.convertCustomerToDto(customer);
             customerDtoList.add(customerDto);
         }
 
@@ -44,7 +47,7 @@ public class CustomerService {
             throw new CustomerNotFoundExceptions("Customers is empty");
         }
         for (Customer customer:allCustomer) {
-            CustomerDto customerDto =  convertDto(customer);
+            CustomerDto customerDto =  CustomerDtoConverters.convertCustomerToDto(customer);
             customerDtoList.add(customerDto);
             //Order converts
 
@@ -58,7 +61,7 @@ public class CustomerService {
         if (customerOptional.isEmpty()){
             throw new CustomerNotFoundExceptions("Customer not found with id :" + id);
         }
-        CustomerDto customerDto =  convertDto(customerOptional.get());
+        CustomerDto customerDto =  CustomerDtoConverters.convertCustomerToDto(customerOptional.get());
         return customerDto;
     }
 
@@ -68,10 +71,7 @@ public class CustomerService {
         if (dto == null)
             throw new NullPointerException();
 
-        Customer customer = new Customer();
-        customer.setFirstName(dto.getFirstName());
-        customer.setLastName(dto.getLastName());
-        customer.setEmail(dto.getEmail());
+        Customer customer = convertDtoToCustomer(dto);
         customerRepository.save(customer);
         dto.setId(customer.getId());
         return dto;
@@ -102,12 +102,5 @@ public class CustomerService {
     }
 
 
-    private CustomerDto convertDto(Customer customer) {
-        CustomerDto customerDto = new CustomerDto();
-        customerDto.setId(customer.getId());
-        customerDto.setFirstName(customerDto.getFirstName());
-        customerDto.setLastName(customer.getLastName());
-        customerDto.setEmail(customer.getEmail());
-        return customerDto;
-    }
+
 }

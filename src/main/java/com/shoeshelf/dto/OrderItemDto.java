@@ -2,7 +2,7 @@ package com.shoeshelf.dto;
 
 
 import com.shoeshelf.domain.Order;
-import com.shoeshelf.domain.Product;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,5 +28,5 @@ public class OrderItemDto {
 
     private Order order;
 
-    private Product product;
+    private ProductDto productDto;
 }
