@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -31,4 +32,9 @@ public class Category {
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     Set<Product> products;
+
+    @Column(name = "created_date")
+    private LocalDateTime createdDate = LocalDateTime.now();
+    @Column(name = "modified_date")
+    private LocalDateTime modifiedDate = LocalDateTime.now();
 }

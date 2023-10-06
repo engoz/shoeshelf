@@ -1,11 +1,11 @@
-package com.shoeshelf.dto;
+package com.shoeshelf.dto.order;
 
-import com.shoeshelf.domain.Customer;
+import com.shoeshelf.dto.customer.CustomerDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,11 +15,12 @@ public class OrderDto {
 
     private Integer id;
 
-    private Date createdDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
     private Double totalPrice;
 
     private List<OrderItemDto> orderItems;
 
-    private Customer customer;
+    private CustomerDto customerDto;
 }

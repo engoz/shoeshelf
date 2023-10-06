@@ -1,19 +1,21 @@
 package com.shoeshelf.service;
 
 import com.shoeshelf.domain.Customer;
-import com.shoeshelf.dto.CustomerDto;
-import com.shoeshelf.exceptions.CategoryNotFoundExceptions;
-import com.shoeshelf.exceptions.CustomerNotFoundExceptions;
-import com.shoeshelf.exceptions.InternelServerException;
+import com.shoeshelf.dto.customer.CustomerCreateDto;
+import com.shoeshelf.dto.customer.CustomerDto;
+import com.shoeshelf.dto.customer.CustomerUpdateDto;
+import com.shoeshelf.exceptions.*;
 import com.shoeshelf.repository.CustomerRepository;
 import com.shoeshelf.util.CustomerDtoConverters;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.shoeshelf.util.CustomerDtoConverters.convertCustomerToDto;
 import static com.shoeshelf.util.CustomerDtoConverters.convertDtoToCustomer;
 
 @Service
@@ -67,17 +69,21 @@ public class CustomerService {
 
 
 
-    public CustomerDto createCustomer(CustomerDto dto)  {
+    public CustomerDto createCustomer(CustomerCreateDto dto)  {
         if (dto == null)
             throw new NullPointerException();
 
+        Customer byEmail = customerRepository.findByEmail(dto.getEmail());
+        if (byEmail != null)
+            throw new CustomerExistException("Customer Exist");
+
         Customer customer = convertDtoToCustomer(dto);
         customerRepository.save(customer);
-        dto.setId(customer.getId());
-        return dto;
+        CustomerDto customerDto = convertCustomerToDto(customer);
+        return customerDto;
     }
 
-    public CustomerDto update(CustomerDto dto) throws CustomerNotFoundExceptions{
+    public CustomerDto update(CustomerUpdateDto dto) throws CustomerNotFoundExceptions{
         Optional<Customer> customerOptional = customerRepository.findById(dto.getId());
         if (customerOptional.isEmpty()){
             throw new CustomerNotFoundExceptions("Customer not found with id :" + dto.getId());
@@ -86,8 +92,12 @@ public class CustomerService {
         customer.setFirstName(dto.getFirstName());
         customer.setLastName(dto.getLastName());
         customer.setEmail(dto.getEmail());
+        customer.setModifiedDate(LocalDateTime.now());
+        customer.setAddress(dto.getAddress());
+        customer.setComments(dto.getComments());
         customerRepository.save(customer);
-        return dto;
+        CustomerDto customerDto = convertCustomerToDto(customer);
+        return customerDto;
     }
 
     public void deleteCustomer(Integer id) {

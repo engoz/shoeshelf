@@ -1,7 +1,7 @@
 package com.shoeshelf.util;
 
 import com.shoeshelf.domain.Product;
-import com.shoeshelf.dto.ProductDto;
+import com.shoeshelf.dto.product.ProductDto;
 
 public class ProductDtoConverters {
 
@@ -14,6 +14,7 @@ public class ProductDtoConverters {
         dto.setName(product.getName());
         dto.setCategoryDto(CategoryDtoConverters.convertDtoToCategory(product.getCategory()));
         dto.setPrice(product.getPrice());
+        dto.setQuantity(product.getQuantity());
         dto.setImageURL(product.getImageURL());
         dto.setDescription(product.getDescription());
 

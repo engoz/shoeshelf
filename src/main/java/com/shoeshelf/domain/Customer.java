@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -29,7 +30,17 @@ public class Customer {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "address")
+    private String address;
+    @Column(name = "comments")
+    private String comments;
+
     @JsonIgnore
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private List<Order> orders;
+
+    @Column(name = "created_date")
+    private LocalDateTime createdDate = LocalDateTime.now();
+    @Column(name = "modified_date")
+    private LocalDateTime modifiedDate = LocalDateTime.now();
 }

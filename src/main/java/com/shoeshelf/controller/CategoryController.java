@@ -1,6 +1,8 @@
 package com.shoeshelf.controller;
 
-import com.shoeshelf.dto.CategoryDto;
+import com.shoeshelf.dto.category.CategoryCreateDto;
+import com.shoeshelf.dto.category.CategoryDto;
+import com.shoeshelf.dto.category.CategoryUpdateDto;
 import com.shoeshelf.exceptions.CategoryNotFoundExceptions;
 import com.shoeshelf.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +45,7 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<CategoryDto> create(@RequestBody CategoryDto dto){
+    public ResponseEntity<CategoryDto> create(@RequestBody CategoryCreateDto dto){
         try {
             CategoryDto categoryDto = categoryService.createCategory(dto);
             return ResponseEntity.ok(categoryDto);
@@ -54,7 +56,7 @@ public class CategoryController {
 
 
     @PutMapping("/update")
-    public ResponseEntity<CategoryDto> update(@RequestBody CategoryDto dto){
+    public ResponseEntity<CategoryDto> update(@RequestBody CategoryUpdateDto dto){
         try {
             CategoryDto categoryDto = categoryService.update(dto);
             return ResponseEntity.ok(categoryDto);

@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "orderitems")
 @NoArgsConstructor
@@ -27,9 +28,6 @@ public class OrderItem {
     private @NotNull double price;
 
 
-    @Column(name = "created_date")
-    private Date createdDate;
-
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "order_id", referencedColumnName = "id")
@@ -40,5 +38,8 @@ public class OrderItem {
     private Product product;
 
 
-
+    @Column(name = "created_date")
+    private LocalDateTime createdDate = LocalDateTime.now();
+    @Column(name = "modified_date")
+    private LocalDateTime modifiedDate = LocalDateTime.now();
 }

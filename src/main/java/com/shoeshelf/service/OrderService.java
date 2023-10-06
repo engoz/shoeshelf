@@ -1,29 +1,142 @@
 package com.shoeshelf.service;
 
+import com.shoeshelf.domain.Customer;
 import com.shoeshelf.domain.Order;
-import com.shoeshelf.dto.OrderDto;
-import com.shoeshelf.exceptions.InternelServerException;
-import com.shoeshelf.exceptions.OrderNotFoundException;
+import com.shoeshelf.domain.OrderItem;
+import com.shoeshelf.domain.Product;
+import com.shoeshelf.dto.order.OrderCreateDto;
+import com.shoeshelf.dto.order.OrderDto;
+import com.shoeshelf.dto.order.OrderItemCreateDto;
+import com.shoeshelf.dto.order.OrderUpdateDto;
+import com.shoeshelf.exceptions.*;
+import com.shoeshelf.repository.CustomerRepository;
 import com.shoeshelf.repository.OrderItemRepository;
 import com.shoeshelf.repository.OrderRepository;
+import com.shoeshelf.repository.ProductRepository;
+import com.shoeshelf.status.OrderStatus;
 import com.shoeshelf.util.OrderDtoConverters;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class OrderService {
 
-    @Autowired
-    OrderRepository orderRepository;
 
-    @Autowired
-    OrderItemRepository orderItemRepository;
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
+
+    private final ProductRepository productRepository;
+    private final CustomerRepository customerRepository;
+
+    public OrderDto createOrder(OrderCreateDto dto) throws CustomerNotFoundExceptions, ProductNotFoundException, ProductQuantityException {
+        if (dto == null)
+            throw new NullPointerException();
+
+        Optional<Customer> customerOptional = customerRepository.findById(dto.getCustomerId());
+
+        if (customerOptional.isEmpty())
+            throw new CustomerNotFoundExceptions("Customer Not Found");
+
+        if (dto.getProductIds().isEmpty())
+            throw new ProductNotFoundException("Products not found exception");
+
+        Order order = new Order();
+        order.setCustomer(customerOptional.get());
+        order.setStatus(OrderStatus.Completed);
+        orderRepository.save(order);
+        double totalPrice = 0.0;
+        List<OrderItemCreateDto> orderItemCreateDtos = dto.getProductIds();
+        for (var orderItemCreateDto : orderItemCreateDtos){
+
+            Optional<Product> productOptional = productRepository.findById(orderItemCreateDto.getProductId());
+            if(productOptional.isEmpty())
+                throw new ProductNotFoundException("Products not found exception");
+
+            Product product = productOptional.get();
+
+            boolean checkProductInventoryQuantity = checkProductInventoryQuantity(product, orderItemCreateDto.getQuantity());
+
+            if(!checkProductInventoryQuantity)
+                throw new ProductQuantityException("Products not found exception");
+
+            OrderItem orderItem = new OrderItem();
+            orderItem.setProduct(product);
+            orderItem.setPrice(product.getPrice());
+            orderItem.setQuantity(orderItem.getQuantity());
+            orderItem.setOrder(order);
+            totalPrice += product.getPrice() * product.getQuantity();
+            orderItemRepository.save(orderItem);
+            product.setQuantity(product.getQuantity()-orderItem.getQuantity());
+            productRepository.save(product);
+        }
+        order.setTotalPrice(totalPrice);
+        return OrderDtoConverters.convertOrderToDto(order);
+    }
+
+    public OrderDto update(OrderUpdateDto dto) throws OrderNotFoundException, CustomerNotFoundExceptions, ProductNotFoundException, ProductQuantityException {
+        Optional<Order> orderOptional = orderRepository.findById(dto.getId());
+        if (orderOptional.isEmpty()){
+            throw new OrderNotFoundException("Order not found with id :" + dto.getId());
+        }
+
+        Optional<Customer> customerOptional = customerRepository.findById(dto.getCustomerId());
+
+        if (customerOptional.isEmpty())
+            throw new CustomerNotFoundExceptions("Customer Not Found");
+
+        if (dto.getProductIds().isEmpty())
+            throw new ProductNotFoundException("Products not found exception");
+
+
+        Order order = orderOptional.get();
+        order.setModifiedDate(LocalDateTime.now());
+        order.setCustomer(customerOptional.get());
+        orderRepository.save(order);
+
+        List<OrderItem> orderItems = order.getOrderItems();
+
+        List<OrderItemCreateDto> orderItemCreateDtos = dto.getProductIds();
+        double totalPrice = 0.0;
+        for (var orderItemCreateDto : orderItemCreateDtos){
+
+            Optional<Product> productOptional = productRepository.findById(orderItemCreateDto.getProductId());
+            if(productOptional.isEmpty())
+                throw new ProductNotFoundException("Products not found exception");
+
+            Product product = productOptional.get();
+
+            boolean checkProductInventoryQuantity = checkProductInventoryQuantity(product, orderItemCreateDto.getQuantity());
+
+            if(!checkProductInventoryQuantity)
+                throw new ProductQuantityException("Products not found exception");
+
+            OrderItem orderItem = new OrderItem();
+            orderItem.setProduct(product);
+            orderItem.setPrice(product.getPrice());
+            orderItem.setQuantity(orderItem.getQuantity());
+            orderItem.setOrder(order);
+            totalPrice += product.getPrice() * product.getQuantity();
+            orderItemRepository.save(orderItem);
+            product.setQuantity(product.getQuantity()-orderItem.getQuantity());
+            productRepository.save(product);
+
+        }
+        order.setTotalPrice(totalPrice);
+        return OrderDtoConverters.convertOrderToDto(order);
+    }
+
+    private boolean checkProductInventoryQuantity(Product product, Integer quantity) throws ProductNotFoundException {
+        return quantity.compareTo(product.getQuantity()) < 0;
+    }
 
     public List<OrderDto> getAllOrders() throws OrderNotFoundException {
         List<OrderDto> orderDtos = new ArrayList<>();
@@ -32,7 +145,7 @@ public class OrderService {
             throw new OrderNotFoundException("Order not found ");
         }
         for (Order order : orders) {
-            OrderDto orderDto = convertDto(order);
+            OrderDto orderDto = OrderDtoConverters.convertOrderToDto(order);
             orderDtos.add(orderDto);
         }
         return orderDtos;
@@ -43,35 +156,10 @@ public class OrderService {
         if (orderOptional.isEmpty()){
             throw new OrderNotFoundException("Order not found with id :" + id);
         }
-        OrderDto orderDto =  convertDto(orderOptional.get());
+        OrderDto orderDto =  OrderDtoConverters.convertOrderToDto(orderOptional.get());
         return orderDto;
     }
 
-    private OrderDto convertDto(Order order) {
-        OrderDto orderDto = new OrderDto();
-        orderDto.setId(order.getId());
-        orderDto.setCreatedDate(order.getCreatedDate());
-        orderDto.setCustomer(order.getCustomer());
-        orderDto.setOrderItems(OrderDtoConverters.convertOrderItemsDto(order.getOrderItems()));
-        orderDto.setTotalPrice(order.getTotalPrice());
-        return orderDto;
-    }
-
-
-
-    public OrderDto update(OrderDto dto) throws OrderNotFoundException{
-        Optional<Order> orderOptional = orderRepository.findById(dto.getId());
-        if (orderOptional.isEmpty()){
-            throw new OrderNotFoundException("Order not found with id :" + dto.getId());
-        }
-        Order order = orderOptional.get();
-        order.setCreatedDate(new Date());
-        order.setCustomer(dto.getCustomer());
-        order.setOrderItems(OrderDtoConverters.convertOrderItems(dto.getOrderItems()));
-        order.setTotalPrice(dto.getTotalPrice());
-        orderRepository.save(order);
-        return dto;
-    }
 
     public void deleteOrder(Integer id) {
         try {
@@ -83,19 +171,7 @@ public class OrderService {
     }
 
 
-    public OrderDto createOrder(OrderDto dto) {
-        if (dto == null)
-            throw new NullPointerException();
 
-        Order order = new Order();
-        order.setCreatedDate(new Date());
-        order.setCustomer(dto.getCustomer());
-        order.setOrderItems(OrderDtoConverters.convertOrderItems(dto.getOrderItems()));
-        order.setTotalPrice(dto.getTotalPrice());
-        orderRepository.save(order);
-        dto.setId(order.getId());
-        return dto;
-    }
 
 
 

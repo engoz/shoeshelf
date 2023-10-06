@@ -1,12 +1,9 @@
-package com.shoeshelf.dto;
+package com.shoeshelf.dto.customer;
 
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -23,5 +20,9 @@ public class CustomerDto {
 
     private String email;
 
-    private List<OrderDto> orderDtos;
+
+    private String address;
+
+    private String comments;
+
 }

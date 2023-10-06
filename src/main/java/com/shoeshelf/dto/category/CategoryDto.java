@@ -1,8 +1,10 @@
-package com.shoeshelf.dto;
+package com.shoeshelf.dto.category;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 
 @Data
@@ -18,4 +20,7 @@ public class CategoryDto {
     private String description;
 
     private String imageUrl;
+
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 }

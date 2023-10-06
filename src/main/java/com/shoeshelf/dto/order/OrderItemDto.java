@@ -1,8 +1,7 @@
-package com.shoeshelf.dto;
+package com.shoeshelf.dto.order;
 
 
-import com.shoeshelf.domain.Order;
-
+import com.shoeshelf.dto.product.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,7 +25,7 @@ public class OrderItemDto {
 
     private Date createdDate;
 
-    private Order order;
+    private Integer orderId;
 
     private ProductDto productDto;
 }

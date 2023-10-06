@@ -1,7 +1,7 @@
 package com.shoeshelf.util;
 
 import com.shoeshelf.domain.Category;
-import com.shoeshelf.dto.CategoryDto;
+import com.shoeshelf.dto.category.CategoryDto;
 
 public class CategoryDtoConverters {
 

@@ -1,7 +1,8 @@
 package com.shoeshelf.controller;
 
-import com.shoeshelf.dto.CustomerDto;
-import com.shoeshelf.exceptions.CategoryNotFoundExceptions;
+import com.shoeshelf.dto.customer.CustomerCreateDto;
+import com.shoeshelf.dto.customer.CustomerDto;
+import com.shoeshelf.dto.customer.CustomerUpdateDto;
 import com.shoeshelf.exceptions.CustomerNotFoundExceptions;
 import com.shoeshelf.service.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +59,7 @@ public class CustomerController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<CustomerDto> create(@RequestBody CustomerDto dto){
+    public ResponseEntity<CustomerDto> create(@RequestBody CustomerCreateDto dto){
         try {
             CustomerDto customerDto = customerService.createCustomer(dto);
             return ResponseEntity.ok(customerDto);
@@ -69,7 +70,7 @@ public class CustomerController {
 
 
     @PutMapping("/update")
-    public ResponseEntity<CustomerDto> update(@RequestBody CustomerDto dto){
+    public ResponseEntity<CustomerDto> update(@RequestBody CustomerUpdateDto dto){
         try {
             CustomerDto customerDto = customerService.update(dto);
             return ResponseEntity.ok(customerDto);
