@@ -4,10 +4,7 @@ import com.shoeshelf.domain.Customer;
 import com.shoeshelf.domain.Order;
 import com.shoeshelf.domain.OrderItem;
 import com.shoeshelf.domain.Product;
-import com.shoeshelf.dto.order.OrderCreateDto;
-import com.shoeshelf.dto.order.OrderDto;
-import com.shoeshelf.dto.order.OrderItemCreateDto;
-import com.shoeshelf.dto.order.OrderUpdateDto;
+import com.shoeshelf.dto.order.*;
 import com.shoeshelf.exceptions.*;
 import com.shoeshelf.repository.CustomerRepository;
 import com.shoeshelf.repository.OrderItemRepository;
@@ -70,10 +67,10 @@ public class OrderService {
 
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(product);
-            orderItem.setPrice(product.getPrice());
+            orderItem.setPrice(product.getSellPrice());
             orderItem.setQuantity(orderItem.getQuantity());
             orderItem.setOrder(order);
-            totalPrice += product.getPrice() * product.getQuantity();
+            totalPrice += product.getSellPrice() * orderItem.getQuantity();
             orderItemRepository.save(orderItem);
             product.setQuantity(product.getQuantity()-orderItem.getQuantity());
             productRepository.save(product);
@@ -93,7 +90,7 @@ public class OrderService {
         if (customerOptional.isEmpty())
             throw new CustomerNotFoundExceptions("Customer Not Found");
 
-        if (dto.getProductIds().isEmpty())
+        if (dto.getOrderItemUpdateDtos().isEmpty())
             throw new ProductNotFoundException("Products not found exception");
 
 
@@ -102,41 +99,49 @@ public class OrderService {
         order.setCustomer(customerOptional.get());
         orderRepository.save(order);
 
-        List<OrderItem> orderItems = order.getOrderItems();
-
-        List<OrderItemCreateDto> orderItemCreateDtos = dto.getProductIds();
         double totalPrice = 0.0;
-        for (var orderItemCreateDto : orderItemCreateDtos){
+        List<OrderItemUpdateDto> orderItemUpdateDtos = dto.getOrderItemUpdateDtos();
+        List<OrderItem> orderItems =order.getOrderItems();
+        for(OrderItem orderItem : orderItems) {
+            for (OrderItemUpdateDto orderItemUpdateDto :orderItemUpdateDtos ) {
+                if (orderItem.getId().equals(orderItemUpdateDto.getId())){
+                    if (orderItemUpdateDto.getQuantity() > orderItem.getQuantity()){
+                        Product product = orderItem.getProduct();
+                        try {
+                            Integer diffQuantity = orderItemUpdateDto.getQuantity() - orderItem.getQuantity();
+                            boolean availableProduct = checkProductInventoryQuantity(product, diffQuantity);
+                            if(availableProduct) {
+                                product.setQuantity(product.getQuantity() - diffQuantity);
+                                productRepository.save(product);
+                            }
 
-            Optional<Product> productOptional = productRepository.findById(orderItemCreateDto.getProductId());
-            if(productOptional.isEmpty())
-                throw new ProductNotFoundException("Products not found exception");
-
-            Product product = productOptional.get();
-
-            boolean checkProductInventoryQuantity = checkProductInventoryQuantity(product, orderItemCreateDto.getQuantity());
-
-            if(!checkProductInventoryQuantity)
-                throw new ProductQuantityException("Products not found exception");
-
-            OrderItem orderItem = new OrderItem();
-            orderItem.setProduct(product);
-            orderItem.setPrice(product.getPrice());
-            orderItem.setQuantity(orderItem.getQuantity());
-            orderItem.setOrder(order);
-            totalPrice += product.getPrice() * product.getQuantity();
-            orderItemRepository.save(orderItem);
-            product.setQuantity(product.getQuantity()-orderItem.getQuantity());
-            productRepository.save(product);
-
+                            orderItem.setQuantity(orderItemUpdateDto.getQuantity());
+                            totalPrice += product.getSellPrice() * orderItemUpdateDto.getQuantity();
+                        } catch (ProductNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }else if (orderItemUpdateDto.getQuantity() < orderItem.getQuantity()){
+                        Product product = orderItem.getProduct();
+                            Integer diffQuantity = orderItemUpdateDto.getQuantity() - orderItem.getQuantity();
+                            product.setQuantity(product.getQuantity() - diffQuantity);
+                            productRepository.save(product);
+                            orderItem.setQuantity(orderItemUpdateDto.getQuantity());
+                            totalPrice -= product.getSellPrice() * orderItemUpdateDto.getQuantity();
+                    }
+                }else {
+                    orderItems.remove(orderItem);
+                }
+                orderItemRepository.save(orderItem);
+            }
         }
+
+
+
         order.setTotalPrice(totalPrice);
         return OrderDtoConverters.convertOrderToDto(order);
     }
 
-    private boolean checkProductInventoryQuantity(Product product, Integer quantity) throws ProductNotFoundException {
-        return quantity.compareTo(product.getQuantity()) < 0;
-    }
+
 
     public List<OrderDto> getAllOrders() throws OrderNotFoundException {
         List<OrderDto> orderDtos = new ArrayList<>();
@@ -171,7 +176,9 @@ public class OrderService {
     }
 
 
-
+    private boolean checkProductInventoryQuantity(Product product, Integer quantity) throws ProductNotFoundException {
+        return quantity.compareTo(product.getQuantity()) < 0;
+    }
 
 
 

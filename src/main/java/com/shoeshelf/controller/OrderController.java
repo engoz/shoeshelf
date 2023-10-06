@@ -65,6 +65,8 @@ public class OrderController {
             return ResponseEntity.notFound().build();
         }catch (Exception ex){
             return ResponseEntity.internalServerError().build();
+        } catch (CustomerNotFoundExceptions e) {
+            throw new RuntimeException(e);
         }
     }
 

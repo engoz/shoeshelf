@@ -16,7 +16,9 @@ public class ProductCreateDto {
     @NotBlank
     private  String imageURL;
     @NotNull
-    private double price;
+    private double buyPrice;
+    @NotNull
+    private double sellPrice;
     @NotNull
     private Integer quantity;
     @NotBlank

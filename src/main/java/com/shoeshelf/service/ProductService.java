@@ -71,7 +71,8 @@ public class ProductService {
         Product product = new Product();
         product.setName(dto.getName());
         product.setCategory(category.get());
-        product.setPrice(dto.getPrice());
+        product.setBuyPrice(dto.getBuyPrice());
+        product.setSellPrice(dto.getSellPrice());
         product.setQuantity(dto.getQuantity());
         product.setImageURL(dto.getImageURL());
         product.setDescription(dto.getDescription());
@@ -94,7 +95,8 @@ public class ProductService {
         Product product = new Product();
         product.setName(dto.getName());
         product.setCategory(category.get());
-        product.setPrice(dto.getPrice());
+        product.setBuyPrice(dto.getBuyPrice());
+        product.setSellPrice(dto.getSellPrice());
         product.setQuantity(dto.getQuantity());
         product.setImageURL(dto.getImageURL());
         product.setDescription(dto.getDescription());

@@ -19,7 +19,8 @@ public class ProductDto {
 
     private String name;
     private  String imageURL;
-    private double price;
+    private double buyPrice;
+    private double sellPrice;
     private String description;
 
     private Integer quantity;

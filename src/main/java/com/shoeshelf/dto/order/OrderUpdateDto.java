@@ -19,5 +19,5 @@ public class OrderUpdateDto {
     @NotEmpty
     private OrderStatus status;
     @NotEmpty
-    private List<OrderItemCreateDto> productIds;
+    private List<OrderItemUpdateDto> orderItemUpdateDtos;
 }

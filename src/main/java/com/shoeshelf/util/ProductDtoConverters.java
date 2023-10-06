@@ -13,7 +13,8 @@ public class ProductDtoConverters {
         dto.setId(product.getId());
         dto.setName(product.getName());
         dto.setCategoryDto(CategoryDtoConverters.convertDtoToCategory(product.getCategory()));
-        dto.setPrice(product.getPrice());
+        dto.setBuyPrice(product.getBuyPrice());
+        dto.setSellPrice(product.getSellPrice());
         dto.setQuantity(product.getQuantity());
         dto.setImageURL(product.getImageURL());
         dto.setDescription(product.getDescription());

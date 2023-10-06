@@ -22,8 +22,9 @@ public class OrderItemDto {
 
     private double price;
 
-
     private Date createdDate;
+
+    private Date modifiedDate;
 
     private Integer orderId;
 

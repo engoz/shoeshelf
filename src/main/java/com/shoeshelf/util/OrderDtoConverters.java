@@ -15,7 +15,7 @@ public class OrderDtoConverters {
         orderDto.setId(order.getId());
         orderDto.setCreatedDate(order.getCreatedDate());
         orderDto.setModifiedDate(order.getModifiedDate());
-        orderDto.setCustomer(order.getCustomer());
+        orderDto.setCustomerDto(CustomerDtoConverters.convertCustomerToDto(order.getCustomer()));
         orderDto.setTotalPrice(order.getTotalPrice());
         orderDto.setOrderItems(OrderDtoConverters.convertOrderItemsDto(order.getOrderItems()));
         return orderDto;

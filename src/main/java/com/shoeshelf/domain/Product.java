@@ -21,7 +21,8 @@ public class Product {
 
     private @NotNull String name;
     private @NotNull String imageURL;
-    private @NotNull double price;
+    private @NotNull double buyPrice;
+    private @NotNull double sellPrice;
     private @NotNull Integer quantity;
     private @NotNull String description;
 
