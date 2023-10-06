@@ -23,6 +23,7 @@ spring:
       hibernate:
         show_sql: true
 
+
   # Swagger
 springdoc:
   api-docs:
