@@ -55,7 +55,6 @@ public class ProductController {
         }
     }
 
-
     @PutMapping("/update")
     public ResponseEntity<ProductDto> update(@RequestBody ProductUpdateDto dto){
         try {
@@ -65,8 +64,6 @@ public class ProductController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
-
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id) {

@@ -14,7 +14,6 @@ public class CategoryDto {
 
     private Integer id;
 
-
     private  String categoryName;
 
     private String description;

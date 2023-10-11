@@ -20,13 +20,11 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-
     @Column(name = "quantity")
     private @NotNull int quantity;
 
     @Column(name = "price")
     private @NotNull double price;
-
 
     @ManyToOne
     @JsonIgnore

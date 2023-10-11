@@ -33,7 +33,17 @@ public class OrderDtoConverters {
             orderItemDto.setQuantity(orderItem.getQuantity());
             orderItemDto.setOrderId(orderItem.getOrder().getId());
             orderItemDto.setProductDto(ProductDtoConverters.convertProductToDto(orderItem.getProduct()));
+            orderItemDtos.add(orderItemDto);
         }
-        return new ArrayList<>();
+        return orderItemDtos;
+    }
+
+    public static List<OrderDto> convertOrdersToDos(List<Order> customerOrders) {
+        List<OrderDto> orderDtos = new ArrayList<>();
+        for (Order order:customerOrders){
+            OrderDto orderDto = convertOrderToDto(order);
+            orderDtos.add(orderDto);
+        }
+        return orderDtos;
     }
 }

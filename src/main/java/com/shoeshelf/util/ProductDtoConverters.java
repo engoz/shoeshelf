@@ -18,7 +18,7 @@ public class ProductDtoConverters {
         dto.setQuantity(product.getQuantity());
         dto.setImageURL(product.getImageURL());
         dto.setDescription(product.getDescription());
-
+        dto.setActive(product.isActive());
         return dto;
 
     }

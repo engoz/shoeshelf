@@ -26,4 +26,6 @@ public class ProductUpdateDto {
     private String description;
     @NotNull
     private Integer categoryId;
+    @NotNull
+    private boolean active;
 }

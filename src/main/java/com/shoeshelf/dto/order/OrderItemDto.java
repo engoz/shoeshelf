@@ -14,9 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class OrderItemDto {
 
-
     private Integer id;
-
 
     private int quantity;
 

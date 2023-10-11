@@ -22,8 +22,8 @@ import static com.shoeshelf.util.CustomerDtoConverters.convertDtoToCustomer;
 @Transactional
 public class CustomerService {
     private final CustomerRepository customerRepository;
-
     public CustomerService(CustomerRepository customerRepository){
+
         this.customerRepository = customerRepository;
     }
 
@@ -41,7 +41,6 @@ public class CustomerService {
         return customerDtoList;
     }
 
-
     public List<CustomerDto> getAllCustomerWithOrders() throws  CustomerNotFoundExceptions {
         List<CustomerDto> customerDtoList = new ArrayList<>();
         List<Customer> allCustomer = customerRepository.findAll();
@@ -51,8 +50,6 @@ public class CustomerService {
         for (Customer customer:allCustomer) {
             CustomerDto customerDto =  CustomerDtoConverters.convertCustomerToDto(customer);
             customerDtoList.add(customerDto);
-            //Order converts
-
         }
 
         return customerDtoList;
@@ -66,9 +63,6 @@ public class CustomerService {
         CustomerDto customerDto =  CustomerDtoConverters.convertCustomerToDto(customerOptional.get());
         return customerDto;
     }
-
-
-
     public CustomerDto createCustomer(CustomerCreateDto dto)  {
         if (dto == null)
             throw new NullPointerException();
@@ -99,7 +93,6 @@ public class CustomerService {
         CustomerDto customerDto = convertCustomerToDto(customer);
         return customerDto;
     }
-
     public void deleteCustomer(Integer id) {
         try {
             customerRepository.deleteById(id);
@@ -110,7 +103,20 @@ public class CustomerService {
 
         }
     }
-
-
-
+    public CustomerDto getByFirstName(String name) throws CustomerNotFoundExceptions {
+        Customer customer = customerRepository.findByFirstName(name);
+        if (customer == null){
+            throw new CustomerNotFoundExceptions("Customer not found with firstName :" + name);
+        }
+        CustomerDto customerDto =  CustomerDtoConverters.convertCustomerToDto(customer);
+        return customerDto;
+    }
+    public CustomerDto getByLastName(String name) throws CustomerNotFoundExceptions {
+        Customer customer = customerRepository.findByLastName(name);
+        if (customer == null){
+            throw new CustomerNotFoundExceptions("Customer not found with lastName :" + name);
+        }
+        CustomerDto customerDto =  CustomerDtoConverters.convertCustomerToDto(customer);
+        return customerDto;
+    }
 }

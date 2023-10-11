@@ -25,6 +25,7 @@ public class Product {
     private @NotNull double sellPrice;
     private @NotNull Integer quantity;
     private @NotNull String description;
+    private boolean active;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

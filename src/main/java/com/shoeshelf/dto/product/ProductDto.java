@@ -13,21 +13,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDto {
-
-
     private Integer id;
-
     private String name;
     private  String imageURL;
     private double buyPrice;
     private double sellPrice;
     private String description;
-
     private Integer quantity;
-
     private CategoryDto categoryDto;
-
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
+    private boolean active;
 }
 

@@ -11,7 +11,6 @@ import com.shoeshelf.exceptions.ProductExistException;
 import com.shoeshelf.exceptions.ProductNotFoundException;
 import com.shoeshelf.repository.CategoryRepository;
 import com.shoeshelf.repository.ProductRepository;
-import com.shoeshelf.util.CategoryDtoConverters;
 import com.shoeshelf.util.ProductDtoConverters;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +44,6 @@ public class ProductService {
         return productDtos;
 
     }
-
     public ProductDto getById(Integer productId) throws ProductNotFoundException {
         Optional<Product> optionalProduct = productRepository.findById(productId);
         if (optionalProduct.isEmpty())
@@ -53,7 +51,6 @@ public class ProductService {
 
         return ProductDtoConverters.convertProductToDto(optionalProduct.get());
     }
-
     public ProductDto createProduct(ProductCreateDto dto) {
         if (dto == null)
             throw new NullPointerException();
@@ -76,13 +73,13 @@ public class ProductService {
         product.setQuantity(dto.getQuantity());
         product.setImageURL(dto.getImageURL());
         product.setDescription(dto.getDescription());
+        product.setActive(dto.isActive());
         productRepository.save(product);
 
         ProductDto productDto = ProductDtoConverters.convertProductToDto(product);
 
         return productDto;
     }
-
 
     public ProductDto update(ProductUpdateDto dto) throws ProductNotFoundException {
         Optional<Product> productOptional = productRepository.findById(dto.getId());
@@ -101,6 +98,7 @@ public class ProductService {
         product.setImageURL(dto.getImageURL());
         product.setDescription(dto.getDescription());
         product.setModifiedDate(LocalDateTime.now());
+        product.setActive(dto.isActive());
         productRepository.save(product);
 
         ProductDto productDto = ProductDtoConverters.convertProductToDto(product);

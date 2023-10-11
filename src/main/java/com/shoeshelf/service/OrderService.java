@@ -101,7 +101,7 @@ public class OrderService {
 
         double totalPrice = 0.0;
         List<OrderItemUpdateDto> orderItemUpdateDtos = dto.getOrderItemUpdateDtos();
-        List<OrderItem> orderItems =order.getOrderItems();
+        List<OrderItem> orderItems = order.getOrderItems();
         for(OrderItem orderItem : orderItems) {
             for (OrderItemUpdateDto orderItemUpdateDto :orderItemUpdateDtos ) {
                 if (orderItem.getId().equals(orderItemUpdateDto.getId())){
@@ -142,7 +142,6 @@ public class OrderService {
     }
 
 
-
     public List<OrderDto> getAllOrders() throws OrderNotFoundException {
         List<OrderDto> orderDtos = new ArrayList<>();
         List<Order> orders = orderRepository.findAll();
@@ -156,6 +155,22 @@ public class OrderService {
         return orderDtos;
     }
 
+    public List<OrderDto> getOrdersWithStatus(OrderStatus orderStatus) throws CustomerNotFoundExceptions {
+        List<Order> customerOrders = orderRepository.findByOrderStatus(orderStatus);
+        List<OrderDto> customerOrderDtos = OrderDtoConverters.convertOrdersToDos(customerOrders);
+        return customerOrderDtos;
+    }
+
+    public List<OrderDto> getCustomerOrders(Integer customerId) throws CustomerNotFoundExceptions {
+        Optional<Customer> customerOptional = customerRepository.findById(customerId);
+        if (customerOptional.isEmpty())
+            throw new CustomerNotFoundExceptions("Customer not found");
+
+        List<Order> customerOrders = orderRepository.findAllByCustomerOrderByCreatedDateDesc(customerOptional.get());
+        List<OrderDto> customerOrderDtos = OrderDtoConverters.convertOrdersToDos(customerOrders);
+        return customerOrderDtos;
+    }
+
     public OrderDto getById(Integer id) throws OrderNotFoundException {
         Optional<Order> orderOptional = orderRepository.findById(id);
         if (orderOptional.isEmpty()){
@@ -165,9 +180,19 @@ public class OrderService {
         return orderDto;
     }
 
-
     public void deleteOrder(Integer id) {
         try {
+            Optional<Order> orderOptional = orderRepository.findById(id);
+            if (orderOptional.isEmpty()){
+                throw new OrderNotFoundException("Order not found with id :" + id);
+            }
+            Order order = orderOptional.get();
+            List<OrderItem> orderItems = order.getOrderItems();
+            for (OrderItem orderItem:orderItems){
+                Product product = orderItem.getProduct();
+                product.setQuantity(product.getQuantity() + orderItem.getQuantity());
+                productRepository.save(product);
+            }
             orderRepository.deleteById(id);
         }catch (Exception ex){
             throw new InternelServerException(ex);
@@ -179,7 +204,5 @@ public class OrderService {
     private boolean checkProductInventoryQuantity(Product product, Integer quantity) throws ProductNotFoundException {
         return quantity.compareTo(product.getQuantity()) < 0;
     }
-
-
 
 }

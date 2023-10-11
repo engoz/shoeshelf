@@ -16,10 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerController {
 
-
     private final CustomerService customerService;
-
-
 
     @GetMapping("/all")
     public ResponseEntity<List<CustomerDto>> getAll(){
@@ -58,6 +55,30 @@ public class CustomerController {
         }
     }
 
+    @GetMapping("/getByFirstName/{name}")
+    public ResponseEntity<CustomerDto> getByFirstName(@PathVariable String name){
+        try {
+            CustomerDto customerDto = customerService.getByFirstName(name);
+            return ResponseEntity.ok(customerDto);
+        }catch (CustomerNotFoundExceptions e){
+            return ResponseEntity.notFound().build();
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/getByLastName{name}")
+    public ResponseEntity<CustomerDto> getByLastName(@PathVariable String name){
+        try {
+            CustomerDto customerDto = customerService.getByLastName(name);
+            return ResponseEntity.ok(customerDto);
+        }catch (CustomerNotFoundExceptions e){
+            return ResponseEntity.notFound().build();
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<CustomerDto> create(@RequestBody CustomerCreateDto dto){
         try {
@@ -67,7 +88,6 @@ public class CustomerController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
 
     @PutMapping("/update")
     public ResponseEntity<CustomerDto> update(@RequestBody CustomerUpdateDto dto){
@@ -80,8 +100,6 @@ public class CustomerController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
-
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id){
