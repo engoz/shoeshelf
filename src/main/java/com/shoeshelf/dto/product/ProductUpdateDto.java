@@ -1,5 +1,6 @@
 package com.shoeshelf.dto.product;
 
+import com.shoeshelf.dto.BaseDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductUpdateDto {
+public class ProductUpdateDto extends BaseDto {
     @NotNull
     private Integer id;
     @NotNull

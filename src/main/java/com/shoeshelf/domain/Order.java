@@ -14,11 +14,9 @@ import java.util.List;
 @ToString
 @Getter
 @Setter
-public class Order {
+public class Order extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+
     @Column(name = "total_price")
     private double totalPrice;
     @Enumerated(EnumType.STRING)
@@ -31,8 +29,5 @@ public class Order {
     @JsonIgnore
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
-    @Column(name = "created_date")
-    private LocalDateTime createdDate = LocalDateTime.now();
-    @Column(name = "modified_date")
-    private LocalDateTime modifiedDate = LocalDateTime.now();
+
 }

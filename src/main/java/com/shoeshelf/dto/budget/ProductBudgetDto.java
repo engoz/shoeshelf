@@ -1,5 +1,6 @@
 package com.shoeshelf.dto.budget;
 
+import com.shoeshelf.dto.BaseDto;
 import com.shoeshelf.dto.customer.CustomerDto;
 import com.shoeshelf.dto.product.ProductDto;
 import lombok.AllArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductBudgetDto {
+public class ProductBudgetDto extends BaseDto {
 
     private ProductDto productDto;
     private double revenue;

@@ -18,10 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -79,6 +78,7 @@ public class OrderService {
         return OrderDtoConverters.convertOrderToDto(order);
     }
 
+     /*
     public OrderDto update(OrderUpdateDto dto) throws OrderNotFoundException, CustomerNotFoundExceptions, ProductNotFoundException, ProductQuantityException {
         Optional<Order> orderOptional = orderRepository.findById(dto.getId());
         if (orderOptional.isEmpty()){
@@ -136,6 +136,74 @@ public class OrderService {
         }
 
 
+
+        order.setTotalPrice(totalPrice);
+        return OrderDtoConverters.convertOrderToDto(order);
+    }
+
+
+      */
+
+    public OrderDto update(OrderUpdateDto dto) throws OrderNotFoundException, CustomerNotFoundExceptions, ProductNotFoundException, ProductQuantityException {
+        Optional<Order> orderOptional = orderRepository.findById(dto.getId());
+        if (orderOptional.isEmpty()){
+            throw new OrderNotFoundException("Order not found with id :" + dto.getId());
+        }
+
+        Optional<Customer> customerOptional = customerRepository.findById(dto.getCustomerId());
+
+        if (customerOptional.isEmpty())
+            throw new CustomerNotFoundExceptions("Customer Not Found");
+
+        if (dto.getOrderItemUpdateDtos().isEmpty())
+            throw new ProductNotFoundException("Products not found exception");
+
+        Order order = orderOptional.get();
+        order.setModifiedDate(LocalDateTime.now());
+        order.setCustomer(customerOptional.get());
+        orderRepository.save(order);
+
+        double totalPrice = 0.0;
+        List<OrderItemUpdateDto> orderItemUpdateDtos = dto.getOrderItemUpdateDtos();
+        List<OrderItem> orderItems = order.getOrderItems();
+        Map<Integer, OrderItem> orderItemMap = new ConcurrentHashMap<>();
+        for(OrderItem orderItem : orderItems) {
+            orderItemMap.put(orderItem.getId(), orderItem);
+        }
+
+        for (OrderItemUpdateDto orderItemUpdateDto :orderItemUpdateDtos ) {
+            OrderItem orderItem = orderItemMap.get(orderItemUpdateDto.getId());
+            if (orderItem != null){
+                if (orderItemUpdateDto.getQuantity() > orderItem.getQuantity()){
+                    Product product = orderItem.getProduct();
+                    try {
+                        Integer diffQuantity = orderItemUpdateDto.getQuantity() - orderItem.getQuantity();
+                        boolean availableProduct = checkProductInventoryQuantity(product, diffQuantity);
+                        if(availableProduct) {
+                            product.setQuantity(product.getQuantity() - diffQuantity);
+                            productRepository.save(product);
+                        }
+
+                        orderItem.setQuantity(orderItemUpdateDto.getQuantity());
+                        totalPrice += product.getSellPrice() * orderItemUpdateDto.getQuantity();
+                    } catch (ProductNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }else if (orderItemUpdateDto.getQuantity() < orderItem.getQuantity()){
+                    Product product = orderItem.getProduct();
+                    Integer diffQuantity = orderItemUpdateDto.getQuantity() - orderItem.getQuantity();
+                    product.setQuantity(product.getQuantity() - diffQuantity);
+                    productRepository.save(product);
+                    orderItem.setQuantity(orderItemUpdateDto.getQuantity());
+                    totalPrice -= product.getSellPrice() * orderItemUpdateDto.getQuantity();
+                }
+
+                orderItemRepository.save(orderItem);
+                orderItemMap.remove(orderItem.getId());
+            }
+        }
+        if(!orderItemMap.isEmpty())
+            orderItemRepository.deleteAll(orderItemMap.values());
 
         order.setTotalPrice(totalPrice);
         return OrderDtoConverters.convertOrderToDto(order);

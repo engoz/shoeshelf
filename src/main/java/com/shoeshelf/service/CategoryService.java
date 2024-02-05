@@ -93,7 +93,6 @@ public class CategoryService {
             throw ex;
         }catch (Exception ex){
             throw new InternelServerException(ex);
-
         }
 
     }

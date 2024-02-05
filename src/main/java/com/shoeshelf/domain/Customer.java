@@ -2,6 +2,7 @@ package com.shoeshelf.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.shoeshelf.util.CustomerConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,10 +17,8 @@ import java.util.List;
 @ToString
 @Getter
 @Setter
-public class Customer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Customer extends BaseEntity {
+
 
     @Column(name = "first_name")
     private String firstName;
@@ -39,8 +38,14 @@ public class Customer {
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private List<Order> orders;
 
-    @Column(name = "created_date")
-    private LocalDateTime createdDate = LocalDateTime.now();
-    @Column(name = "modified_date")
-    private LocalDateTime modifiedDate = LocalDateTime.now();
+
+
+    public Customer(String firstName, String lastName, String email, String address, String comments) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
+        this.comments = comments;
+    }
+
 }

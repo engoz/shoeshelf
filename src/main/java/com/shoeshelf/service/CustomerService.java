@@ -6,6 +6,8 @@ import com.shoeshelf.dto.customer.CustomerDto;
 import com.shoeshelf.dto.customer.CustomerUpdateDto;
 import com.shoeshelf.exceptions.*;
 import com.shoeshelf.repository.CustomerRepository;
+import com.shoeshelf.util.Converter;
+import com.shoeshelf.util.CustomerConverter;
 import com.shoeshelf.util.CustomerDtoConverters;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -33,8 +35,9 @@ public class CustomerService {
         if (allCustomer.isEmpty()){
             throw new CustomerNotFoundExceptions("Customers is empty");
         }
+        CustomerConverter customerConverter = new CustomerConverter();
         for (Customer customer:allCustomer) {
-            CustomerDto customerDto =  CustomerDtoConverters.convertCustomerToDto(customer);
+            CustomerDto customerDto =  customerConverter.convertFromEntity(customer);
             customerDtoList.add(customerDto);
         }
 

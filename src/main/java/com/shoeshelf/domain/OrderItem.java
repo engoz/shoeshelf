@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 @Getter
 @Setter
-public class OrderItem {
+public class OrderItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,9 +35,4 @@ public class OrderItem {
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 
-
-    @Column(name = "created_date")
-    private LocalDateTime createdDate = LocalDateTime.now();
-    @Column(name = "modified_date")
-    private LocalDateTime modifiedDate = LocalDateTime.now();
 }

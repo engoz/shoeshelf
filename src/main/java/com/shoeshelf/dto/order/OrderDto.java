@@ -1,5 +1,6 @@
 package com.shoeshelf.dto.order;
 
+import com.shoeshelf.dto.BaseDto;
 import com.shoeshelf.dto.customer.CustomerDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderDto {
+public class OrderDto extends BaseDto {
 
     private Integer id;
 

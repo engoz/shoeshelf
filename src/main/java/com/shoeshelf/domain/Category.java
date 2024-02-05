@@ -14,12 +14,7 @@ import java.util.Set;
 @ToString
 @Getter
 @Setter
-public class Category {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+public class Category extends BaseEntity {
 
     private @NotNull String categoryName;
 
@@ -33,8 +28,4 @@ public class Category {
             cascade = CascadeType.ALL)
     Set<Product> products;
 
-    @Column(name = "created_date")
-    private LocalDateTime createdDate = LocalDateTime.now();
-    @Column(name = "modified_date")
-    private LocalDateTime modifiedDate = LocalDateTime.now();
 }

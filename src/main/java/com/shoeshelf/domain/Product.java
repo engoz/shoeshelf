@@ -14,10 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 @Getter
 @Setter
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Product extends BaseEntity {
 
     private @NotNull String name;
     private @NotNull String imageURL;
@@ -31,8 +28,5 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     Category category;
-    @Column(name = "created_date")
-    private LocalDateTime createdDate = LocalDateTime.now();
-    @Column(name = "modified_date")
-    private LocalDateTime modifiedDate = LocalDateTime.now();
+
 }

@@ -1,5 +1,6 @@
 package com.shoeshelf.dto.order;
 
+import com.shoeshelf.dto.BaseDto;
 import com.shoeshelf.status.OrderStatus;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderUpdateDto {
+public class OrderUpdateDto extends BaseDto {
     @NotEmpty
     private Integer id;
     @NotEmpty

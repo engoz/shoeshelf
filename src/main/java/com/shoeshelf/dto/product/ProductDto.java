@@ -1,6 +1,7 @@
 package com.shoeshelf.dto.product;
 
 
+import com.shoeshelf.dto.BaseDto;
 import com.shoeshelf.dto.category.CategoryDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDto {
+public class ProductDto extends BaseDto {
     private Integer id;
     private String name;
     private  String imageURL;
