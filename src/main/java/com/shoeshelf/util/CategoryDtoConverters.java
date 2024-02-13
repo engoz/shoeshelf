@@ -16,7 +16,7 @@ public class CategoryDtoConverters {
         return category;
     }
 
-    public static  CategoryDto convertDtoToCategory(Category category) {
+    public static  CategoryDto convertDtoFromCategory(Category category) {
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setId(category.getId());
         categoryDto.setCategoryName(category.getCategoryName());

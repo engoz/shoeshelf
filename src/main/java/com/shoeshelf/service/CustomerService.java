@@ -86,12 +86,28 @@ public class CustomerService {
             throw new CustomerNotFoundExceptions("Customer not found with id :" + dto.getId());
         }
         Customer customer = customerOptional.get();
-        customer.setFirstName(dto.getFirstName());
-        customer.setLastName(dto.getLastName());
-        customer.setEmail(dto.getEmail());
+
+        if(dto.getFirstName() != null){
+            customer.setFirstName(dto.getFirstName());
+        }
+
+        if(dto.getLastName() != null){
+            customer.setLastName(dto.getLastName());
+        }
+
+        if(dto.getEmail() != null){
+            customer.setEmail(dto.getEmail());
+        }
+
+        if(dto.getAddress() != null){
+            customer.setAddress(dto.getAddress());
+        }
+        if(dto.getComments() != null){
+            customer.setComments(dto.getComments());
+        }
+
         customer.setModifiedDate(LocalDateTime.now());
-        customer.setAddress(dto.getAddress());
-        customer.setComments(dto.getComments());
+
         customerRepository.save(customer);
         CustomerDto customerDto = convertCustomerToDto(customer);
         return customerDto;

@@ -8,8 +8,8 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/shoeshelf_db
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: 123456
+    username: admin
+    password: admin
     hikari:
       maximum-pool-size: 10
       auto-commit: false
@@ -17,7 +17,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:

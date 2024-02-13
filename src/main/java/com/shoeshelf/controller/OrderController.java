@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Comparator;
 import java.util.List;
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/api/order")
 @RequiredArgsConstructor
+@CrossOrigin("http://localhost:5173")
 public class OrderController {
 
 

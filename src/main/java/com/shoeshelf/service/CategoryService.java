@@ -32,7 +32,7 @@ public class CategoryService {
             throw new CategoryNotFoundExceptions("Category is empty");
         }
         for (Category category:allCategory) {
-            CategoryDto categoryDto = CategoryDtoConverters.convertDtoToCategory(category);
+            CategoryDto categoryDto = CategoryDtoConverters.convertDtoFromCategory(category);
             categoryDtoList.add(categoryDto);
         }
 
@@ -47,7 +47,7 @@ public class CategoryService {
             throw new CategoryNotFoundExceptions("Category not found with id :" + id);
         }
         Category category = categoryOptional.get();
-        CategoryDto categoryDto = CategoryDtoConverters.convertDtoToCategory(category);
+        CategoryDto categoryDto = CategoryDtoConverters.convertDtoFromCategory(category);
         return categoryDto;
     }
 
@@ -67,7 +67,7 @@ public class CategoryService {
 
         repository.save(category);
 
-        return CategoryDtoConverters.convertDtoToCategory(category);
+        return CategoryDtoConverters.convertDtoFromCategory(category);
 
     }
 
@@ -77,12 +77,19 @@ public class CategoryService {
             throw new CategoryNotFoundExceptions("Category not found with id :" + dto.getId());
         }
         Category category = categoryOptional.get();
-        category.setCategoryName(dto.getCategoryName());
-        category.setDescription(dto.getDescription());
-        category.setImageUrl(dto.getImageUrl());
+        if(dto.getCategoryName() != null){
+            category.setCategoryName(dto.getCategoryName());
+        }
+        if(dto.getDescription() != null){
+            category.setDescription(dto.getDescription());
+        }
+        if(dto.getImageUrl() != null){
+            category.setImageUrl(dto.getImageUrl());
+        }
+
         category.setModifiedDate(LocalDateTime.now());
         repository.save(category);
-        return CategoryDtoConverters.convertDtoToCategory(category);
+        return CategoryDtoConverters.convertDtoFromCategory(category);
     }
 
     public void deleteCategory(Integer id) {

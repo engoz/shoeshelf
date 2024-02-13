@@ -30,6 +30,8 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
+
+
     public List<ProductDto> getAllProducts() throws ProductNotFoundException {
 
         List<ProductDto> productDtos = new ArrayList<>();
@@ -87,16 +89,31 @@ public class ProductService {
             throw new ProductNotFoundException("product not found with id :" + dto.getId());
         }
 
-        Optional<Category> category = categoryRepository.findById(dto.getCategoryId());
+        Product product = productOptional.get();
+        if (dto.getName() != null){
+            product.setName(dto.getName());
+        }
+        if (dto.getCategoryId() != null){
+            Optional<Category> category = categoryRepository.findById(dto.getCategoryId());
+            product.setCategory(category.get());
+        }
+        if (dto.getBuyPrice() != 0){
+            product.setBuyPrice(dto.getBuyPrice());
+        }
 
-        Product product = new Product();
-        product.setName(dto.getName());
-        product.setCategory(category.get());
-        product.setBuyPrice(dto.getBuyPrice());
-        product.setSellPrice(dto.getSellPrice());
-        product.setQuantity(dto.getQuantity());
-        product.setImageURL(dto.getImageURL());
-        product.setDescription(dto.getDescription());
+        if (dto.getSellPrice() != 0){
+            product.setSellPrice(dto.getSellPrice());
+        }
+        if (dto.getQuantity() != null && dto.getQuantity() != 0){
+            product.setQuantity(dto.getQuantity());
+        }
+        if (dto.getImageURL() != null){
+            product.setImageURL(dto.getImageURL());
+        }
+        if (dto.getDescription() != null){
+            product.setDescription(dto.getDescription());
+        }
+
         product.setModifiedDate(LocalDateTime.now());
         product.setActive(dto.isActive());
         productRepository.save(product);

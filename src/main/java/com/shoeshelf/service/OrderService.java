@@ -51,6 +51,7 @@ public class OrderService {
         orderRepository.save(order);
         double totalPrice = 0.0;
         List<OrderItemCreateDto> orderItemCreateDtos = dto.getProductIds();
+        List<OrderItem> orderItems = new ArrayList<>();
         for (var orderItemCreateDto : orderItemCreateDtos){
 
             Optional<Product> productOptional = productRepository.findById(orderItemCreateDto.getProductId());
@@ -58,8 +59,8 @@ public class OrderService {
                 throw new ProductNotFoundException("Products not found exception");
 
             Product product = productOptional.get();
-
-            boolean checkProductInventoryQuantity = checkProductInventoryQuantity(product, orderItemCreateDto.getQuantity());
+            int quantity = orderItemCreateDto.getQuantity();
+            boolean checkProductInventoryQuantity = checkProductInventoryQuantity(product, quantity);
 
             if(!checkProductInventoryQuantity)
                 throw new ProductQuantityException("Products not found exception");
@@ -67,13 +68,15 @@ public class OrderService {
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(product);
             orderItem.setPrice(product.getSellPrice());
-            orderItem.setQuantity(orderItem.getQuantity());
+            orderItem.setQuantity(quantity);
             orderItem.setOrder(order);
-            totalPrice += product.getSellPrice() * orderItem.getQuantity();
+            totalPrice += product.getSellPrice() * quantity;
             orderItemRepository.save(orderItem);
-            product.setQuantity(product.getQuantity()-orderItem.getQuantity());
+            product.setQuantity(product.getQuantity()-quantity);
             productRepository.save(product);
+            orderItems.add(orderItem);
         }
+        order.setOrderItems(orderItems);
         order.setTotalPrice(totalPrice);
         return OrderDtoConverters.convertOrderToDto(order);
     }
@@ -260,6 +263,7 @@ public class OrderService {
                 Product product = orderItem.getProduct();
                 product.setQuantity(product.getQuantity() + orderItem.getQuantity());
                 productRepository.save(product);
+                orderItemRepository.deleteById(orderItem.getId());
             }
             orderRepository.deleteById(id);
         }catch (Exception ex){

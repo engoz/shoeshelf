@@ -24,8 +24,9 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/budget")
+@RequestMapping("/api/budget")
 @RequiredArgsConstructor
+@CrossOrigin("http://localhost:5173")
 public class BudgetController {
 
     private final BudgetService budgetService;
