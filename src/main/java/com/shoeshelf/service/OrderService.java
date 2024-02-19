@@ -34,50 +34,64 @@ public class OrderService {
     private final CustomerRepository customerRepository;
 
     public OrderDto createOrder(OrderCreateDto dto) throws CustomerNotFoundExceptions, ProductNotFoundException, ProductQuantityException {
+        /* Gelen Obje Bos ise hata firlat*/
         if (dto == null)
             throw new NullPointerException();
 
+        /* Dto objesindeki customerID ile custemer@i repostory den buluyorum */
         Optional<Customer> customerOptional = customerRepository.findById(dto.getCustomerId());
 
+        /* Customer Yoksa Hata Firlat*/
         if (customerOptional.isEmpty())
             throw new CustomerNotFoundExceptions("Customer Not Found");
 
+        /* DTO dan gelen ProductId bossa  Hata Firlat*/
         if (dto.getProductIds().isEmpty())
             throw new ProductNotFoundException("Products not found exception");
 
         Order order = new Order();
         order.setCustomer(customerOptional.get());
         order.setStatus(OrderStatus.Completed);
+        /* Order Kayit icin hazir halde */
         orderRepository.save(order);
         double totalPrice = 0.0;
         List<OrderItemCreateDto> orderItemCreateDtos = dto.getProductIds();
         List<OrderItem> orderItems = new ArrayList<>();
         for (var orderItemCreateDto : orderItemCreateDtos){
 
+            /* Order Productlar repository@den bulunur */
             Optional<Product> productOptional = productRepository.findById(orderItemCreateDto.getProductId());
+
+            /* Product Yoksa Hata Firlat*/
             if(productOptional.isEmpty())
                 throw new ProductNotFoundException("Products not found exception");
 
             Product product = productOptional.get();
             int quantity = orderItemCreateDto.getQuantity();
+            /* Elimizdeki stok miktari bu methodda kontrol edilir */
             boolean checkProductInventoryQuantity = checkProductInventoryQuantity(product, quantity);
 
+            /* Eger yeterli prodcut stock  Yoksa Hata Firlat*/
             if(!checkProductInventoryQuantity)
                 throw new ProductQuantityException("Products not found exception");
 
             OrderItem orderItem = new OrderItem();
+            orderItem.setProduct_id(product.getId());
             orderItem.setProduct(product);
             orderItem.setPrice(product.getSellPrice());
             orderItem.setQuantity(quantity);
             orderItem.setOrder(order);
+            /* Order Toplam tutar hesapliyorum */
             totalPrice += product.getSellPrice() * quantity;
-            orderItemRepository.save(orderItem);
+            /* Siparis edilen urun adeti product uzerindeki stok miktarindan bu alanda cukarim yapilir */
             product.setQuantity(product.getQuantity()-quantity);
             productRepository.save(product);
+            orderItemRepository.save(orderItem);
             orderItems.add(orderItem);
         }
         order.setOrderItems(orderItems);
         order.setTotalPrice(totalPrice);
+        /* Frontend@e iletmek icin DTO convert ediyorum */
         return OrderDtoConverters.convertOrderToDto(order);
     }
 
@@ -148,16 +162,22 @@ public class OrderService {
       */
 
     public OrderDto update(OrderUpdateDto dto) throws OrderNotFoundException, CustomerNotFoundExceptions, ProductNotFoundException, ProductQuantityException {
+        /* Order  buluyorum  order id bana dto ile frontend@den geliyor */
         Optional<Order> orderOptional = orderRepository.findById(dto.getId());
+
+        /* Order Yoksa Hata Firlat */
         if (orderOptional.isEmpty()){
             throw new OrderNotFoundException("Order not found with id :" + dto.getId());
         }
 
+        /* Customer bul*/
         Optional<Customer> customerOptional = customerRepository.findById(dto.getCustomerId());
 
+        /* Customer Yoksa Hata Firlat */
         if (customerOptional.isEmpty())
             throw new CustomerNotFoundExceptions("Customer Not Found");
 
+        /* OrderItems Yoksa Hata Firlat */
         if (dto.getOrderItemUpdateDtos().isEmpty())
             throw new ProductNotFoundException("Products not found exception");
 
@@ -177,10 +197,12 @@ public class OrderService {
         for (OrderItemUpdateDto orderItemUpdateDto :orderItemUpdateDtos ) {
             OrderItem orderItem = orderItemMap.get(orderItemUpdateDto.getId());
             if (orderItem != null){
+                Product product = productRepository.findById(orderItem.getProduct_id()).get();
                 if (orderItemUpdateDto.getQuantity() > orderItem.getQuantity()){
-                    Product product = orderItem.getProduct();
+
                     try {
                         Integer diffQuantity = orderItemUpdateDto.getQuantity() - orderItem.getQuantity();
+                        //Yetrli Quanatity varmi
                         boolean availableProduct = checkProductInventoryQuantity(product, diffQuantity);
                         if(availableProduct) {
                             product.setQuantity(product.getQuantity() - diffQuantity);
@@ -193,10 +215,10 @@ public class OrderService {
                         throw new RuntimeException(e);
                     }
                 }else if (orderItemUpdateDto.getQuantity() < orderItem.getQuantity()){
-                    Product product = orderItem.getProduct();
                     Integer diffQuantity = orderItemUpdateDto.getQuantity() - orderItem.getQuantity();
                     product.setQuantity(product.getQuantity() - diffQuantity);
                     productRepository.save(product);
+                    orderItem.setProduct(product);
                     orderItem.setQuantity(orderItemUpdateDto.getQuantity());
                     totalPrice -= product.getSellPrice() * orderItemUpdateDto.getQuantity();
                 }
@@ -220,6 +242,11 @@ public class OrderService {
             throw new OrderNotFoundException("Order not found ");
         }
         for (Order order : orders) {
+            for (OrderItem item:order.getOrderItems()){
+                final Integer productId = item.getProduct_id();
+                Product product = productRepository.findById(productId).get();
+                item.setProduct(product);
+            }
             OrderDto orderDto = OrderDtoConverters.convertOrderToDto(order);
             orderDtos.add(orderDto);
         }
@@ -259,8 +286,9 @@ public class OrderService {
             }
             Order order = orderOptional.get();
             List<OrderItem> orderItems = order.getOrderItems();
+
             for (OrderItem orderItem:orderItems){
-                Product product = orderItem.getProduct();
+                Product product = productRepository.findById(orderItem.getProduct_id()).get();
                 product.setQuantity(product.getQuantity() + orderItem.getQuantity());
                 productRepository.save(product);
                 orderItemRepository.deleteById(orderItem.getId());

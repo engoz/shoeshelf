@@ -2,9 +2,7 @@ package com.shoeshelf.controller;
 
 
 import com.shoeshelf.domain.Customer;
-import com.shoeshelf.dto.budget.BudgetDto;
-import com.shoeshelf.dto.budget.CustomerBudgetDto;
-import com.shoeshelf.dto.budget.ProductBudgetDto;
+import com.shoeshelf.dto.budget.*;
 import com.shoeshelf.dto.category.CategoryDto;
 import com.shoeshelf.dto.customer.CustomerDto;
 import com.shoeshelf.dto.product.ProductCreateDto;
@@ -31,7 +29,26 @@ public class BudgetController {
 
     private final BudgetService budgetService;
 
+
+
+    /* get rest istedi satis istatistiklerinin istekleri ilk bu endpointe gelmektedir
+    * Inventory icinde Overview kismi bu servisten beslenir*/
+    @GetMapping("/statistics")
+    public ResponseEntity<ProductStatisticDTO> getProductStatistic(){
+        /* Servis katmanindan hesaplamalar alinir */
+        ProductStatisticDTO statisticDTO = budgetService.getProductStatistic();
+        return ResponseEntity.ok(statisticDTO);
+    }
+
+    @GetMapping("/salesanalysis")
+    public ResponseEntity<SalesDto> getSaleSanalysis(){
+        /* Servis katmanindan hesaplamalar alinir */
+        SalesDto salesDto = budgetService.getSalesAnalysis();
+        return ResponseEntity.ok(salesDto);
+    }
+
     // All
+    /* Expenses,  Reveneu, totalSaleQuanatity, Total Profit */
     @GetMapping("/all")
     public ResponseEntity<BudgetDto> getAllBudget(){
         BudgetDto budgetDto = budgetService.getAllBudget();

@@ -20,12 +20,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 
 import static org.springframework.security.config.Customizer.withDefaults;
-
-@EnableWebSecurity
-@RequiredArgsConstructor
-@Configuration
-public class SecurityConfig {
-
+//@EnableWebSecurity
+//@RequiredArgsConstructor
+//@Configuration
+public class SecurityConfigOld {
+/*
     private static final String API = "/api";
     private final CorsComponent corsComponent;
 
@@ -83,5 +82,5 @@ public class SecurityConfig {
 
         return source;
     }
-
+*/
 }

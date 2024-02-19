@@ -31,8 +31,9 @@ public class OrderItem extends BaseEntity {
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
 
-    @OneToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
-    private Product product;
+    @Column(name = "product_id")
+    private Integer product_id;
 
+    @Transient
+    private Product product;
 }

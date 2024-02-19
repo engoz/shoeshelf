@@ -11,7 +11,6 @@ import java.util.List;
 @Table(name="orders")
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Getter
 @Setter
 public class Order extends BaseEntity {
@@ -21,6 +20,7 @@ public class Order extends BaseEntity {
     private double totalPrice;
     @Enumerated(EnumType.STRING)
     private OrderStatus status = OrderStatus.Waiting;
+
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;

@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,10 +15,9 @@ import java.util.List;
 @Table(name = "customers")
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Getter
 @Setter
-public class Customer extends BaseEntity {
+public class Customer extends BaseEntity implements Serializable {
 
 
     @Column(name = "first_name")

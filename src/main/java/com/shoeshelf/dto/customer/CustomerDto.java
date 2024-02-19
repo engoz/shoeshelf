@@ -6,9 +6,7 @@ import com.shoeshelf.dto.BaseDto;
 import java.util.Objects;
 
 public class CustomerDto extends BaseDto {
-    // Encapsulating the id,firstName,lastName,email,address,comments
-    // only approachable and used
-    // only access getters and setters methods defined
+
     private Integer id;
     private String firstName;
     private String lastName;

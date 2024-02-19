@@ -9,7 +9,7 @@ public class CustomerDtoConverters {
     public static CustomerDto convertCustomerToDto(Customer customer) {
         CustomerDto customerDto = new CustomerDto();
         customerDto.setId(customer.getId());
-        customerDto.setFirstName(customerDto.getFirstName());
+        customerDto.setFirstName(customer.getFirstName());
         customerDto.setLastName(customer.getLastName());
         customerDto.setEmail(customer.getEmail());
         customerDto.setAddress(customer.getAddress());

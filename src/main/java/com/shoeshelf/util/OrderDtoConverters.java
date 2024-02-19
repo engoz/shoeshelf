@@ -4,11 +4,19 @@ import com.shoeshelf.domain.Order;
 import com.shoeshelf.domain.OrderItem;
 import com.shoeshelf.dto.order.OrderDto;
 import com.shoeshelf.dto.order.OrderItemDto;
+import com.shoeshelf.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class OrderDtoConverters {
+
+    @Autowired
+    ProductRepository productRepository;
 
     public static OrderDto convertOrderToDto(Order order) {
         OrderDto orderDto = new OrderDto();

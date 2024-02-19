@@ -29,3 +29,13 @@ springdoc:
     enabled: true
   swagger-ui:
     enabled: true
+
+security:
+  auth:
+    user: admin
+    password: Pass@12345
+    role: ADMIN
+
+cors:
+  allowed-origins:
+    - http://localhost:5173

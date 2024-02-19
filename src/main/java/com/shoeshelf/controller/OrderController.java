@@ -54,6 +54,7 @@ public class OrderController {
         }
     }
 
+    /* rest order create controller post metoduyla cagrilir*/
     @PostMapping("/create")
     public ResponseEntity<OrderDto> create(@RequestBody OrderCreateDto dto){
         try {
